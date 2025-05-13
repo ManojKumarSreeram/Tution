@@ -1,0 +1,24 @@
+@startuml ""
+title Teacher Registration Flow
+
+class App {
+    +register_teacher()
+}
+
+class TeacherRegistrationController {
+    +validate_teacher_registrationDetails()
+}
+
+class TeacherRegistrationService {
+    +process_teacher_registration_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> TeacherRegistrationController
+TeacherRegistrationController --> TeacherRegistrationService 
+TeacherRegistrationService --> DBConnection
+
+@enduml

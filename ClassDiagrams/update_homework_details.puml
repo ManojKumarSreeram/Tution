@@ -1,0 +1,24 @@
+@startuml ""
+title update Home work details
+
+class App {
+    +update_homework_details()
+}
+
+class updateHomeWorkController {
+    +validate_updated_home_work_details()
+}
+
+class updateHomeWorkService {
+    +process_updated_home_work_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> updateHomeWorkController
+updateHomeWorkController --> updateHomeWorkService 
+updateHomeWorkService --> DBConnection
+
+@enduml

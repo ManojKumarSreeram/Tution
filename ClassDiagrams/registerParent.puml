@@ -1,0 +1,24 @@
+@startuml ""
+title parent Registration Flow
+
+class App {
+    +register_parent()
+}
+
+class parentRegistrationController {
+    +validate_parent_registrationDetails()
+}
+
+class parentRegistrationService {
+    +process_parent_registration_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> parentRegistrationController
+parentRegistrationController --> parentRegistrationService 
+parentRegistrationService --> DBConnection
+
+@enduml

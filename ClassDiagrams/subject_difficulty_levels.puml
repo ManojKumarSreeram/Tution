@@ -1,0 +1,24 @@
+@startuml ""
+title Subject Difficulty levels
+
+class App {
+    +subject_difficulty_levels()
+}
+
+class subjectDifficultyLevelsController {
+    +validate_subject_difficulty_levels()
+}
+
+class subjectDifficultyLevelsService {
+    +process_subject_difficulty_levels()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> subjectDifficultyLevelsController
+subjectDifficultyLevelsController --> subjectDifficultyLevelsService 
+subjectDifficultyLevelsService --> DBConnection
+
+@enduml

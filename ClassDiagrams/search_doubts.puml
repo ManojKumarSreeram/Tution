@@ -1,0 +1,24 @@
+@startuml ""
+title Search Doubts
+
+class App {
+    +search_doubts()
+}
+
+class searchDoubtsController {
+    +validate_search_doubts()
+}
+
+class serachDoubtsService {
+    +process_doubts_engine()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> searchDoubtsController
+searchDoubtsController --> serachDoubtsService 
+serachDoubtsService --> DBConnection
+
+@enduml

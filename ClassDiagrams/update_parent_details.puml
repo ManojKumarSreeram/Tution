@@ -1,0 +1,24 @@
+@startuml ""
+title Parent Registration Updation Flow
+
+class App {
+    +update_parent_deatails()
+}
+
+class updateparentDetailsController {
+    +validate_parent_updated_details()
+}
+
+class updateParentDetailsService {
+    +process_parent_updated_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> updateparentDetailsController
+updateparentDetailsController --> updateParentDetailsService 
+updateParentDetailsService --> DBConnection
+
+@enduml

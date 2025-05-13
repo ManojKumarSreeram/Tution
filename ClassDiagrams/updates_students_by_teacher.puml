@@ -1,0 +1,24 @@
+@startuml ""
+title Update Student Data by teacher
+
+class App {
+    +update_student_by_teacher()
+}
+
+class UpdateStudentByTeacherController {
+    +validate_student_data_by_teacher()
+}
+
+class UpdateStudentByTeacherService {
+    +process_student_data_by_teacher()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> UpdateStudentByTeacherController
+UpdateStudentByTeacherController --> UpdateStudentByTeacherService 
+UpdateStudentByTeacherService --> DBConnection
+
+@enduml

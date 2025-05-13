@@ -1,0 +1,24 @@
+@startuml ""
+title Search Engine
+
+class App {
+    +search_engine()
+}
+
+class searchEngineController {
+    +validate_search_engine()
+}
+
+class serachEngineService {
+    +process_search_engine()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> searchEngineController
+searchEngineController --> serachEngineService 
+serachEngineService --> DBConnection
+
+@enduml

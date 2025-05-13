@@ -1,0 +1,24 @@
+@startuml ""
+title Grid For Teacher Flow
+
+class App {
+    +get_grid_for_teacher()
+}
+
+class GridForTeahcerController {
+    +validate_grid_for_teacher_details()
+}
+
+class GridForTeacherService {
+    +process_grid_for_teacher_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> GridForTeahcerController
+GridForTeahcerController --> GridForTeacherService 
+GridForTeacherService --> DBConnection
+
+@enduml

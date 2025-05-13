@@ -1,0 +1,24 @@
+@startuml ""
+title Student Registration Master Data
+
+class App {
+    +student_registration_master_data()
+}
+
+class studentRegisterMasterDataController {
+    +validate_student_regi_master_data()
+}
+
+class studentRegisterMasterDataService {
+    +process_student_regi_master_data()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> updateTeacherDetailsController
+updateTeacherDetailsController --> updateTeacherDetailsService 
+updateTeacherDetailsService --> DBConnection
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml ""
+title Search History
+
+class App {
+    +search_history()
+}
+
+class searchHistoruController {
+    +validate_search_history()
+}
+
+class serachHistoryService {
+    +process_doubts_history()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> searchHistoruController
+searchHistoruController --> serachHistoryService 
+serachHistoryService --> DBConnection
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml ""
+title Insert Home Work Details 
+
+class App {
+    +insert_home_work_details()
+}
+
+class insertHomeWorkController {
+    +validate_insert_home_work_details()
+}
+
+class insertHomeWorkService {
+    +process_insert_home_work_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> insertHomeWorkController
+insertHomeWorkController --> insertHomeWorkService 
+insertHomeWorkService --> DBConnection
+
+@enduml

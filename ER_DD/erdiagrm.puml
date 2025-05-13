@@ -1,0 +1,167 @@
+@startuml "Tution"
+
+entity "Teacher Login" as teacher_login {
+  *teacher_id : INT <<PK>> Not Null
+  --
+  first_name : VARCHAR(250) Not Null 
+  last_name : VARCHAR(250) Not Null
+  email : VARCHAR(250) Not Null
+  password : VARCHAR(250) Not Null
+  phone_number : VARCHAR(250) Not Null
+  created_at : DATETIME
+  modified_at : DATETIME
+  is_active : Boolean 
+}
+
+entity "Student Login" as student_login{
+  *student_id : INT <<PK>> Not Null
+  --
+  teacher_id : INT <<FK>> (Teacher_login)
+  first_name : VARCHAR(250) Not Null 
+  last_name : VARCHAR(250) Not Null
+  email : VARCHAR(250) Not Null
+  password : VARCHAR(250) Not Null
+  phone_number : VARCHAR(250) Not Null
+  created_at : DATETIME
+  modified_at : DATETIME
+  is_active : Boolean 
+}
+
+entity "Education board" as education_board{
+  *id : INT <<PK>> Not Null
+  --
+  board_name :  VARCHAR(250) Not Null
+  created_at : DATETIME
+}
+
+entity "Classes" as classes{
+  *id : INT <<PK>> Not Null
+  --
+  class_name :  VARCHAR(250) Not Null
+  created_at : DATETIME
+}
+
+entity "access _level_types" as access_levels{
+   *id : INT <<PK>> Not Null
+  --
+  access_name :  VARCHAR(250) Not Null
+  created_at : DATETIME
+}
+
+entity "Subjects" as subjects{
+   *id : INT <<PK>> Not Null
+  --
+  class_id :  INT <<FK>> (access_levels)
+  subject_name :  VARCHAR(250) Not Null
+  board_id :  INT <<FK>> (education_board)
+  created_at : DATETIME
+}
+
+entity "Student_details" as student_details{
+  *id : INT <<PK>> Not Null
+  --
+  student_id : INT <<FK>> (Student_login)
+  board_id : INT <<FK>> (education_board)
+  class_id : INT <<FK>> (classes)
+  favourate_sujects : VARCHAR(1000)
+  toughest_sujects : VARCHAR(1000)
+  no_of_hours_to_study : Int Not Null
+  access_levels_id : INT <<FK>> (access_levels)
+  created_at : DATETIME
+  modified_at : DATETIME
+  is_active : Boolean 
+}
+
+entity "Student_selectd_subjects" as student_selected_subjects{
+   *id : INT <<PK>> Not Null
+  --
+  student_id : INT <<FK>> (Student_login)
+  subject_id : INT <<FK>> (subjects)
+  ' class_id : INT <<FK>> (classes)
+  created_at : DATETIME
+  is_active : Boolean
+}
+
+entity "subject difficulty" as subject_difficulty{
+   *id : INT <<PK>> Not Null
+   --
+   difficut_levels : VARCHAR(250) 
+}
+
+entity "Student_homework" as student_homework{
+   *id : INT <<PK>> Not Null
+  --
+  student_id : INT <<FK>> (Student_login)
+  subject_id : INT <<FK>> (subjects)
+  ' class_id : INT <<FK>> (classes)
+  subject_difficulty_level : <<FK>> (subject_difficulty)
+  is_homework_completed : Boolean default false
+  allocated_time_to_hw : INT default 0
+  created_at : DATETIME
+  modified_at : DATETIME
+  is_active : Boolean
+}
+
+entity "LLM responses" as llm_response{
+  *id : INT <<PK>> Not Null
+  --
+  llm_response : VARCHAR(250)
+  Input_tokens : INT
+  output_tokens : INT
+  created_at : DATETIME
+}
+
+entity "Error Logs" as error_logs{
+  *id : INT <<PK>> Not Null
+  --
+  error : VARCHAR(250)
+  file_name :  VARCHAR(250)
+  created_at : DATETIME
+}
+
+entity "Parent Login" as parent_login {
+  *parent_id : INT <<PK>> Not Null
+  --
+  first_name : VARCHAR(250) Not Null 
+  last_name : VARCHAR(250) Not Null
+  email : VARCHAR(250) Not Null
+  password : VARCHAR(250) Not Null
+  phone_number : VARCHAR(250) Not Null
+  created_at : DATETIME
+  modified_at : DATETIME
+  is_active : Boolean 
+}
+
+entity "parents children" as parent_student{
+   *id : INT <<PK>> Not Null
+  --
+  parent_id : INT <<FK>> (parent_login)
+  student_id : INT <<FK>> (Student_login)
+  created_at : DATETIME
+  modified_at : DATETIME
+}
+
+' Relationships
+teacher_login ||--o{ student_login : has multiple
+
+student_details ||--|| student_login : has
+student_details ||--|| education_board : belongs to
+student_details ||--|| classes : belongs to
+student_details ||--|| access_levels : has
+
+
+
+student_selected_subjects }o--o{ student_login : selectes
+student_selected_subjects }o--o{ subjects : selects
+
+
+student_homework }o--|| student_login : assigned to
+
+student_homework }o--|| subject_difficulty : difficulty
+
+parent_login ||--o{ parent_student : has multiple
+parent_student ||--|| student_login : links to
+
+
+
+@enduml

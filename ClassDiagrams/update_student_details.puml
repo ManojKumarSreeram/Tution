@@ -1,0 +1,24 @@
+@startuml ""
+title student Registration Updation Flow
+
+class App {
+    +update_student_deatails()
+}
+
+class updateStudentDetailsController {
+    +validate_student_updated_details()
+}
+
+class updateStudentDetailsService {
+    +process_student_updated_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> updateStudentDetailsController
+updateStudentDetailsController --> updateStudentDetailsService 
+updateStudentDetailsService --> DBConnection
+
+@enduml

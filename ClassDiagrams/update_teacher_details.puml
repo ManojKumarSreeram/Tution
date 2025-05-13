@@ -1,0 +1,24 @@
+@startuml ""
+title Teacher Registration Updation Flow
+
+class App {
+    +update_teacher_deatails()
+}
+
+class updateTeacherDetailsController {
+    +validate_teacheres_updated_details()
+}
+
+class updateTeacherDetailsService {
+    +process_teacheres_updated_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> updateTeacherDetailsController
+updateTeacherDetailsController --> updateTeacherDetailsService 
+updateTeacherDetailsService --> DBConnection
+
+@enduml

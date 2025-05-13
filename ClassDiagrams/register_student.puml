@@ -1,0 +1,24 @@
+@startuml ""
+title Student Registration Flow
+
+class App {
+    +register_student()
+}
+
+class StudentRegistrationController {
+    +validate_student_registrationDetails()
+}
+
+class StudentRegistrationService {
+    +process_student_registration_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> StudentRegistrationController
+StudentRegistrationController --> StudentRegistrationService 
+StudentRegistrationService --> DBConnection
+
+@enduml
