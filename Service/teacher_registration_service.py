@@ -31,7 +31,19 @@ def process_teacher_registration_details(params):
         return {"data":"data is inserted successfully","status_code":200}
     except CustomAPIException as ce:
         logging.info("customexception in process_teacher_registration_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
         raise ce
     except Exception as e:
         logging.info("unknown in process_teacher_registration_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
         raise BadRequestException(str(e))

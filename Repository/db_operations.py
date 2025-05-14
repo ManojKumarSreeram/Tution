@@ -25,3 +25,25 @@ def inser_data(query,values):
             cur.close()
         if 'conn' in locals():
             conn.close()
+
+def fetch_single_row(query, values=None):
+    try:
+        logging.info("Start of fetch_single_row function")
+        conn = connect_db()
+        cur = conn.cursor()
+        # Execute the select query
+        cur.execute(query, values if values else ())
+        row = cur.fetchone()
+        logging.info("Data fetched successfully.")
+        return row
+    except CustomAPIException as ce:
+        logging.info("CustomAPIException in fetch_single_row function")
+        raise ce
+    except Exception as e:
+        logging.info("Exception in fetch_single_row function")
+        raise InternalServerError(str(e))
+    finally:
+        if 'cur' in locals():
+            cur.close()
+        if 'conn' in locals():
+            conn.close()

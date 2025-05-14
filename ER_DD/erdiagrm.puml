@@ -6,6 +6,7 @@ entity "Teacher Login" as teacher_login {
   first_name : VARCHAR(250) Not Null 
   last_name : VARCHAR(250) Not Null
   email : VARCHAR(250) Not Null
+  gender : VARCHAR(50) Not Null
   password : VARCHAR(250) Not Null
   phone_number : VARCHAR(250) Not Null
   created_at : DATETIME
@@ -20,6 +21,7 @@ entity "Student Login" as student_login{
   first_name : VARCHAR(250) Not Null 
   last_name : VARCHAR(250) Not Null
   email : VARCHAR(250) Not Null
+  gender : VARCHAR(50) Not Null
   password : VARCHAR(250) Not Null
   phone_number : VARCHAR(250) Not Null
   created_at : DATETIME
@@ -51,7 +53,7 @@ entity "access _level_types" as access_levels{
 entity "Subjects" as subjects{
    *id : INT <<PK>> Not Null
   --
-  class_id :  INT <<FK>> (access_levels)
+  class_id :  INT <<FK>> (classes)
   subject_name :  VARCHAR(250) Not Null
   board_id :  INT <<FK>> (education_board)
   created_at : DATETIME
@@ -77,15 +79,15 @@ entity "Student_selectd_subjects" as student_selected_subjects{
   --
   student_id : INT <<FK>> (Student_login)
   subject_id : INT <<FK>> (subjects)
-  ' class_id : INT <<FK>> (classes)
-  created_at : DATETIME
-  is_active : Boolean
+  created_at : DATETIME Default
+  is_active : Boolean Default
 }
 
 entity "subject difficulty" as subject_difficulty{
    *id : INT <<PK>> Not Null
    --
    difficut_levels : VARCHAR(250) 
+   created_at : DATETIME Default
 }
 
 entity "Student_homework" as student_homework{
@@ -93,13 +95,12 @@ entity "Student_homework" as student_homework{
   --
   student_id : INT <<FK>> (Student_login)
   subject_id : INT <<FK>> (subjects)
-  ' class_id : INT <<FK>> (classes)
   subject_difficulty_level : <<FK>> (subject_difficulty)
   is_homework_completed : Boolean default false
   allocated_time_to_hw : INT default 0
-  created_at : DATETIME
-  modified_at : DATETIME
-  is_active : Boolean
+  created_at : DATETIME default
+  modified_at : DATETIME default
+  is_active : Boolean default true
 }
 
 entity "LLM responses" as llm_response{
@@ -108,7 +109,7 @@ entity "LLM responses" as llm_response{
   llm_response : VARCHAR(250)
   Input_tokens : INT
   output_tokens : INT
-  created_at : DATETIME
+  created_at : DATETIME default
 }
 
 entity "Error Logs" as error_logs{
@@ -125,11 +126,12 @@ entity "Parent Login" as parent_login {
   first_name : VARCHAR(250) Not Null 
   last_name : VARCHAR(250) Not Null
   email : VARCHAR(250) Not Null
+  gender : VARCHAR(50) Not Null
   password : VARCHAR(250) Not Null
   phone_number : VARCHAR(250) Not Null
-  created_at : DATETIME
-  modified_at : DATETIME
-  is_active : Boolean 
+  created_at : DATETIME default
+  modified_at : DATETIME default
+  is_active : Boolean default true
 }
 
 entity "parents children" as parent_student{
@@ -137,8 +139,9 @@ entity "parents children" as parent_student{
   --
   parent_id : INT <<FK>> (parent_login)
   student_id : INT <<FK>> (Student_login)
-  created_at : DATETIME
-  modified_at : DATETIME
+  created_at : DATETIME default
+  modified_at : DATETIME default
+  is_active : Boolean default true
 }
 
 ' Relationships
