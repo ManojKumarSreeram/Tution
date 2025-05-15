@@ -8,6 +8,7 @@ from Controller.parent_registration_controller import validate_parent_registrati
 from Controller.student_details_controller import validate_get_studnet_details
 from Controller.insert_student_controller import validate_student_details_insertion
 from Controller.update_teacher_details_controller import validate_teacheres_updated_details
+from Controller.update_parent_details_controller import validate_parent_updated_details
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -177,7 +178,6 @@ def get_student_details():
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
 
-
 @app.route('/registerParent', methods=['POST'])
 def register_parent():
     try :
@@ -206,6 +206,34 @@ def register_parent():
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
    
+@app.route('/updateParentDetails', methods=['PUT'])
+def update_parent_deatails():
+    try :
+        logging.info("start of update_parent_deatails function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_parent_updated_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in update_parent_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in update_parent_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+
 
 @app.route('/registerStudent', methods=['POST'])
 def register_student():
@@ -262,7 +290,7 @@ def insert_student_details():
         values = (str(e),__name__)
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
-    
+
 
 # Central handler for all custom exceptions
 @app.errorhandler(CustomAPIException)
