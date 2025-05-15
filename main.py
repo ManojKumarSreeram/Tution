@@ -7,6 +7,7 @@ from Controller.student_registration_controller import validate_student_registra
 from Controller.parent_registration_controller import validate_parent_registrationDetails
 from Controller.student_details_controller import validate_get_studnet_details
 from Controller.insert_student_controller import validate_student_details_insertion
+from Controller.update_teacher_details_controller import validate_teacheres_updated_details
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -41,7 +42,34 @@ def register_teacher():
         values = (str(e),__name__)
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
-    
+
+@app.route('/updateTeacherDetails', methods=['PUT'])
+def update_teacher_deatails():
+    try :
+        logging.info("start of update_teacher_deatails function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_teacheres_updated_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in update_teacher_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in update_teacher_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
 
 
 @app.route('/login',methods=['POST'])
