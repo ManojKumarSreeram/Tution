@@ -4,21 +4,28 @@ from Utilities.custom_exceptions import InternalServerError,CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
 
-def inser_data(query,values):
+def inser_data(query, values):
     try:   
         logging.info("start of inser_data function")
-        conn=connect_db() 
+        conn = connect_db() 
         cur = conn.cursor() 
         # Execute the insert query
         cur.execute(query, values)
+
+        # Try to fetch the returning id (if any)
+        returning_id = None
+        if cur.description:  # cur.description is not None if RETURNING is used
+            returning_id = cur.fetchone()[0]
+
         # Commit the transaction
         conn.commit()
         logging.info("Data inserted successfully.")
+        return returning_id
     except CustomAPIException as ce:
         logging.info("customexception in inser_data function")
         raise ce
     except Exception as e:
-        logging.info("customexception in inser_data function")
+        logging.info("exception in inser_data function")
         raise InternalServerError(str(e))
     finally:
         if 'cur' in locals():

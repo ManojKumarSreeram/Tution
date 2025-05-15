@@ -20,14 +20,34 @@ def process_parent_registration_details(params):
         password=params.get("password").strip()
         phone_number=params.get("phone_number").strip()
         gender=params.get("gender").strip()
+        student_ids=params.get("student_ids")
+        print(student_ids,type(student_ids))
 
+        # Inserting parent detials
         query = """
                 INSERT INTO parent_login (first_name, last_name, email,gender, password, phone_number)
-                VALUES (%s, %s, %s,%s, %s,%s);
-            """
+                VALUES (%s, %s, %s,%s, %s,%s)
+                RETURNING parent_id;
+         """
         hashed_password=hash_password(password)
         values = (first_name,last_name,email, gender,hashed_password,phone_number)
-        result=inser_data(query,values)
+        parent_id=inser_data(query,values)
+        # Unpack if inser_data returns a tuple
+        if isinstance(parent_id, tuple):
+            parent_id = parent_id[0]
+
+
+        # insert parent-student mapping details in parent_student table
+        mapping_query_base = """
+            INSERT INTO parent_student (parent_id, student_id) VALUES
+        """
+        values_placeholder = ",".join(["(%s, %s)" for _ in student_ids])
+        mapping_query = mapping_query_base + values_placeholder
+        mapping_values = []
+        for student_id in student_ids:
+            mapping_values.extend([parent_id, student_id])  # flatten the list
+        inser_data(mapping_query, tuple(mapping_values))
+       
         return {"data":"data is inserted successfully","status_code":200}
     except CustomAPIException as ce:
         logging.info("customexception in process_parent_registration_details function")
