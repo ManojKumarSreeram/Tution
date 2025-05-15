@@ -49,7 +49,7 @@ def process_user_login_details(params):
             result=fetch_single_row(query,values)
         elif user_type == "student":
             query = """
-                select password,student_id from student_login where email = %s
+                select password,student_id,is_details_filled from student_login where email = %s
             """
             values = (email,)
             result=fetch_single_row(query,values)
@@ -64,6 +64,13 @@ def process_user_login_details(params):
                 user_id = result[1]
                 payload_data = {"user_type": user_type, "id": user_id}
                 token = create_jwt_token(payload_data)
+                if user_type == "student":
+                    return {
+                    "user_type": user_type,
+                    "id": user_id,
+                    "token": token,
+                    "is_user_details_filled":result[2]
+                    }
                 return {
                     "user_type": user_type,
                     "id": user_id,
