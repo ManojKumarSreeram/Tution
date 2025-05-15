@@ -1,6 +1,7 @@
 from flask import Flask,request, jsonify
 from Controller.teacher_registration_controller import validate_teacher_registrationDetails
 from Controller.user_login_controller import validate_user_login_details
+from Controller.student_regi_master_data_controller import validate_student_regi_master_data
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -65,6 +66,33 @@ def login_user():
         values = (str(e),__name__)
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
+
+
+@app.route('/studentRegMasterData',methods=['GET'])
+def student_registration_master_data():
+    try :
+        logging.info("start of student_registration_master_data function")
+        result=validate_student_regi_master_data()
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in student_registration_master_data function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce       
+    except Exception as e :
+        logging.info("customexception in student_registration_master_data function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+
 
 # Central handler for all custom exceptions
 @app.errorhandler(CustomAPIException)

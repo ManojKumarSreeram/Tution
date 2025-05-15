@@ -47,3 +47,25 @@ def fetch_single_row(query, values=None):
             cur.close()
         if 'conn' in locals():
             conn.close()
+
+def fetch_multiple_rows(query, values=None):
+    try:
+        logging.info("Start of fetch_multiple_rows function")
+        conn = connect_db()
+        cur = conn.cursor()
+        # Execute the select query
+        cur.execute(query, values if values else ())
+        rows = cur.fetchall()
+        logging.info("Data fetched successfully.")
+        return rows
+    except CustomAPIException as ce:
+        logging.info("CustomAPIException in fetch_multiple_rows function")
+        raise ce
+    except Exception as e:
+        logging.info("Exception in fetch_multiple_rows function")
+        raise InternalServerError(str(e))
+    finally:
+        if 'cur' in locals():
+            cur.close()
+        if 'conn' in locals():
+            conn.close()

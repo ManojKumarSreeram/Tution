@@ -17,8 +17,8 @@ class DBConnection {
     +connect_db()
 }
 
-App --> updateTeacherDetailsController
-updateTeacherDetailsController --> updateTeacherDetailsService 
-updateTeacherDetailsService --> DBConnection
+App --> studentRegisterMasterDataController
+studentRegisterMasterDataController --> studentRegisterMasterDataService 
+studentRegisterMasterDataService --> DBConnection
 
 @enduml
