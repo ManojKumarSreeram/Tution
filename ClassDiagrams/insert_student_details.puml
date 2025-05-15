@@ -1,0 +1,24 @@
+@startuml ""
+title Insert Student Details 
+
+class App {
+    +insert_student_details()
+}
+
+class insertStudentDetailsController {
+    +validate_student_details_insertion()
+}
+
+class insertStudentDetailsService {
+    +process_student_details_insertion()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> insertStudentDetailsController
+insertStudentDetailsController --> insertStudentDetailsService 
+insertStudentDetailsService --> DBConnection
+
+@enduml
