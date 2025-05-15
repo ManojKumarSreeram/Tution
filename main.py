@@ -1,5 +1,6 @@
 from flask import Flask,request, jsonify
 from Controller.teacher_registration_controller import validate_teacher_registrationDetails
+from Controller.user_login_controller import validate_user_login_details
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +35,36 @@ def register_teacher():
         values = (str(e),__name__)
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
+    
 
+
+@app.route('/login',methods=['POST'])
+def login_user():
+    try :
+        logging.info("start of login_user function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_user_login_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in login_user function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce       
+    except Exception as e :
+        logging.info("customexception in login_user function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
 
 # Central handler for all custom exceptions
 @app.errorhandler(CustomAPIException)

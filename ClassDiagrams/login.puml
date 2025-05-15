@@ -1,0 +1,24 @@
+@startuml ""
+title Login Flow
+
+class App {
+    +login_user()
+}
+
+class UserLoginController {
+    +validate_user_login_details()
+}
+
+class UserLoginService {
+    +process_user_login_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> UserLoginController
+UserLoginController --> UserLoginService 
+UserLoginService --> DBConnection
+
+@enduml

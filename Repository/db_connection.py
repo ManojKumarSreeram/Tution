@@ -2,7 +2,6 @@ import psycopg2
 from dotenv import load_dotenv
 import os
 from Utilities.custom_exceptions import InternalServerError
-import logging
 load_dotenv()
 import logging
 logging.basicConfig(level=logging.INFO)
