@@ -5,6 +5,7 @@ from Controller.student_regi_master_data_controller import validate_student_regi
 from Controller.subject_difficulty_level_controller import validate_subject_difficulty_levels
 from Controller.student_registration_controller import validate_student_registrationDetails
 from Controller.parent_registration_controller import validate_parent_registrationDetails
+from Controller.student_details_controller import validate_get_studnet_details
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -114,6 +115,31 @@ def subject_difficulty_levels():
         raise ce       
     except Exception as e :
         logging.info("customexception in subject_difficulty_levels function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+
+@app.route('/getStudentDetails',methods=['GET'])
+def get_student_details():
+    try :
+        logging.info("start of get_student_details function")
+        result=validate_get_studnet_details()
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in get_student_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce       
+    except Exception as e :
+        logging.info("customexception in get_student_details function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);

@@ -1,0 +1,24 @@
+@startuml ""
+title get Student Details
+
+class App {
+    +get_student_details()
+}
+
+class studentDetailsController {
+    +validate_get_studnet_details()
+}
+
+class studentDetailsService {
+    +process_get_Student_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> studentDetailsController
+studentDetailsController --> studentDetailsService 
+studentDetailsService --> DBConnection
+
+@enduml
