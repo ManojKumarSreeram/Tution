@@ -3,6 +3,7 @@ from Controller.teacher_registration_controller import validate_teacher_registra
 from Controller.user_login_controller import validate_user_login_details
 from Controller.student_regi_master_data_controller import validate_student_regi_master_data
 from Controller.subject_difficulty_level_controller import validate_subject_difficulty_levels
+from Controller.parent_registration_controller import validate_parent_registrationDetails
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -120,6 +121,35 @@ def subject_difficulty_levels():
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
 
+
+@app.route('/registerParent', methods=['POST'])
+def register_parent():
+    try :
+        logging.info("start of register_parent function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_parent_registrationDetails(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in register_parent function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in register_parent function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+   
 
 # Central handler for all custom exceptions
 @app.errorhandler(CustomAPIException)
