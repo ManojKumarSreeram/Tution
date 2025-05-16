@@ -11,6 +11,7 @@ from Controller.update_teacher_details_controller import validate_teacheres_upda
 from Controller.update_parent_details_controller import validate_parent_updated_details
 from Controller.update_student_details_controller import validate_student_updated_details
 from Controller.insert_homwwork_details_controller import validate_insert_home_work_details
+from Controller.update_homework_controller import validate_updated_home_work_details
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -337,6 +338,34 @@ def insert_home_work_details():
         raise ce                # Let Flask handle it
     except Exception as e :
         logging.info("customexception in insert_home_work_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+
+@app.route('/updateHomeworkrDetails', methods=['PUT'])
+def update_homework_details():
+    try :
+        logging.info("start of update_homework_details function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_updated_home_work_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in update_homework_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in update_homework_details function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);
