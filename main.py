@@ -45,17 +45,17 @@ def register_teacher():
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
 
-@app.route('/updateTeacherDetails', methods=['PUT'])
-def update_teacher_deatails():
+@app.route('/registerStudent', methods=['POST'])
+def register_student():
     try :
-        logging.info("start of update_teacher_deatails function")
+        logging.info("start of register_student function")
         params=request.get_json()
         if not params:
             return {"data":"request body cannot be empty","status_code":401}
-        result=validate_teacheres_updated_details(params)
+        result=validate_student_registrationDetails(params)
         return result
     except CustomAPIException as ce:
-        logging.info("customexception in update_teacher_deatails function")
+        logging.info("customexception in register_student function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);
@@ -64,7 +64,7 @@ def update_teacher_deatails():
         inser_data(query,values)
         raise ce                # Let Flask handle it
     except Exception as e :
-        logging.info("customexception in update_teacher_deatails function")
+        logging.info("customexception in register_student function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);
@@ -73,7 +73,34 @@ def update_teacher_deatails():
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
 
-
+@app.route('/registerParent', methods=['POST'])
+def register_parent():
+    try :
+        logging.info("start of register_parent function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_parent_registrationDetails(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in register_parent function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in register_parent function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+   
 @app.route('/login',methods=['POST'])
 def login_user():
     try :
@@ -102,6 +129,89 @@ def login_user():
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
 
+@app.route('/updateTeacherDetails', methods=['PUT'])
+def update_teacher_deatails():
+    try :
+        logging.info("start of update_teacher_deatails function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_teacheres_updated_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in update_teacher_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in update_teacher_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+
+@app.route('/updateStudentDetails', methods=['PUT'])
+def update_student_deatails():
+    try :
+        logging.info("start of update_student_deatails function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_student_updated_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in update_student_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in update_student_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+
+@app.route('/updateParentDetails', methods=['PUT'])
+def update_parent_deatails():
+    try :
+        logging.info("start of update_parent_deatails function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_parent_updated_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in update_parent_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in update_parent_deatails function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
 
 @app.route('/studentRegMasterData',methods=['GET'])
 def student_registration_master_data():
@@ -127,7 +237,6 @@ def student_registration_master_data():
         values = (str(e),__name__)
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
-
 
 @app.route('/subjectDifficultyLevels',methods=['GET'])
 def subject_difficulty_levels():
@@ -178,120 +287,6 @@ def get_student_details():
         values = (str(e),__name__)
         inser_data(query,values)
         return jsonify({"Error":str(e),"statuscode":e.status_code})
-
-@app.route('/registerParent', methods=['POST'])
-def register_parent():
-    try :
-        logging.info("start of register_parent function")
-        params=request.get_json()
-        if not params:
-            return {"data":"request body cannot be empty","status_code":401}
-        result=validate_parent_registrationDetails(params)
-        return result
-    except CustomAPIException as ce:
-        logging.info("customexception in register_parent function")
-        query = """
-                INSERT INTO error_logs (error,file_name)
-                VALUES (%s, %s);
-            """
-        values = (str(ce),__name__)
-        inser_data(query,values)
-        raise ce                # Let Flask handle it
-    except Exception as e :
-        logging.info("customexception in register_parent function")
-        query = """
-                INSERT INTO error_logs (error,file_name)
-                VALUES (%s, %s);
-            """
-        values = (str(e),__name__)
-        inser_data(query,values)
-        return jsonify({"Error":str(e),"statuscode":e.status_code})
-   
-@app.route('/updateParentDetails', methods=['PUT'])
-def update_parent_deatails():
-    try :
-        logging.info("start of update_parent_deatails function")
-        params=request.get_json()
-        if not params:
-            return {"data":"request body cannot be empty","status_code":401}
-        result=validate_parent_updated_details(params)
-        return result
-    except CustomAPIException as ce:
-        logging.info("customexception in update_parent_deatails function")
-        query = """
-                INSERT INTO error_logs (error,file_name)
-                VALUES (%s, %s);
-            """
-        values = (str(ce),__name__)
-        inser_data(query,values)
-        raise ce                # Let Flask handle it
-    except Exception as e :
-        logging.info("customexception in update_parent_deatails function")
-        query = """
-                INSERT INTO error_logs (error,file_name)
-                VALUES (%s, %s);
-            """
-        values = (str(e),__name__)
-        inser_data(query,values)
-        return jsonify({"Error":str(e),"statuscode":e.status_code})
-
-
-@app.route('/registerStudent', methods=['POST'])
-def register_student():
-    try :
-        logging.info("start of register_student function")
-        params=request.get_json()
-        if not params:
-            return {"data":"request body cannot be empty","status_code":401}
-        result=validate_student_registrationDetails(params)
-        return result
-    except CustomAPIException as ce:
-        logging.info("customexception in register_student function")
-        query = """
-                INSERT INTO error_logs (error,file_name)
-                VALUES (%s, %s);
-            """
-        values = (str(ce),__name__)
-        inser_data(query,values)
-        raise ce                # Let Flask handle it
-    except Exception as e :
-        logging.info("customexception in register_student function")
-        query = """
-                INSERT INTO error_logs (error,file_name)
-                VALUES (%s, %s);
-            """
-        values = (str(e),__name__)
-        inser_data(query,values)
-        return jsonify({"Error":str(e),"statuscode":e.status_code})
-
-@app.route('/updateStudentDetails', methods=['PUT'])
-def update_student_deatails():
-    try :
-        logging.info("start of update_student_deatails function")
-        params=request.get_json()
-        if not params:
-            return {"data":"request body cannot be empty","status_code":401}
-        result=validate_student_updated_details(params)
-        return result
-    except CustomAPIException as ce:
-        logging.info("customexception in update_student_deatails function")
-        query = """
-                INSERT INTO error_logs (error,file_name)
-                VALUES (%s, %s);
-            """
-        values = (str(ce),__name__)
-        inser_data(query,values)
-        raise ce                # Let Flask handle it
-    except Exception as e :
-        logging.info("customexception in update_student_deatails function")
-        query = """
-                INSERT INTO error_logs (error,file_name)
-                VALUES (%s, %s);
-            """
-        values = (str(e),__name__)
-        inser_data(query,values)
-        return jsonify({"Error":str(e),"statuscode":e.status_code})
-
 
 @app.route('/insertStudentDetails', methods=['POST'])
 def insert_student_details():

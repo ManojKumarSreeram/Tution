@@ -18,6 +18,7 @@ def process_student_details_insertion(params):
         toughest_subjects=params.get("toughest_subjects").strip()
         no_of_hours_to_study=params.get("no_of_hours_to_study")
         access_levels_id=params.get("access_levels_id")
+        selected_subjects_ids=params.get("selected_subjects_ids")
 
         # inserting student details
         query = """
@@ -26,6 +27,17 @@ def process_student_details_insertion(params):
             """
         values = (student_id,board_id,class_id,favourate_subjects,toughest_subjects,no_of_hours_to_study,access_levels_id)
         result=inser_data(query,values)
+
+        # insert parent-student mapping details in parent_student table
+        mapping_query_base = """
+            INSERT INTO student_selected_subjects (student_id, subject_id ) VALUES
+        """
+        values_placeholder = ",".join(["(%s, %s)" for _ in selected_subjects_ids])
+        mapping_query = mapping_query_base + values_placeholder
+        mapping_values = []
+        for subject_id in selected_subjects_ids:
+            mapping_values.extend([student_id, subject_id])  # flatten the list
+        inser_data(mapping_query, tuple(mapping_values))
 
         # update is_details filled status in student_login
         update_query = "UPDATE student_login SET is_details_filled = %s WHERE student_id = %s;"
