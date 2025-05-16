@@ -1,19 +1,19 @@
 
 from Utilities.validate_params import validate_request_body
 from Utilities.custom_exceptions import BadRequestException
-from Service.insert_studentDetails_service import process_student_details_insertion
-from Utilities.custom_exceptions import BadRequestException, CustomAPIException,ForbiddenException
+from Service.insert_homework_details_service import process_insert_home_work_details
+from Utilities.custom_exceptions import BadRequestException, CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
 from Repository.db_operations import inser_data
 
-def validate_student_details_insertion(params):
+def validate_insert_home_work_details(params):
     try:
-        logging.info("start of validate_student_details_insertion function")
+        logging.info("start of validate_insert_home_work_details function")
         optional_keys = {}
         missing = validate_request_body(params, optional_keys=optional_keys)
         if not missing:
-            response = process_student_details_insertion(params)
+            response = process_insert_home_work_details(params)
             return response
         else:
             query = """
@@ -25,7 +25,7 @@ def validate_student_details_insertion(params):
             raise BadRequestException(f"The required keys {' '.join(missing)} are missing")
     except CustomAPIException as ce:
         # Reraise known custom exception without wrapping
-        logging.info("customexception in validate_student_details_insertion function")
+        logging.info("customexception in validate_insert_home_work_details function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);
@@ -35,7 +35,7 @@ def validate_student_details_insertion(params):
         raise ce
     except Exception as e:
         # Wrap unknown exceptions into a custom error
-        logging.info("unknown exceptions in validate_student_details_insertion function")
+        logging.info("unknown exceptions in validate_insert_home_work_details function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);

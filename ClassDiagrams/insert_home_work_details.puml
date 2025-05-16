@@ -5,11 +5,11 @@ class App {
     +insert_home_work_details()
 }
 
-class insertHomeWorkController {
+class insertHomeWorkDetailsController {
     +validate_insert_home_work_details()
 }
 
-class insertHomeWorkService {
+class insertHomeWorkDetailsService {
     +process_insert_home_work_details()
 }
 
@@ -17,8 +17,8 @@ class DBConnection {
     +connect_db()
 }
 
-App --> insertHomeWorkController
-insertHomeWorkController --> insertHomeWorkService 
-insertHomeWorkService --> DBConnection
+App --> insertHomeWorkDetailsController
+insertHomeWorkDetailsController --> insertHomeWorkDetailsService 
+insertHomeWorkDetailsService --> DBConnection
 
 @enduml

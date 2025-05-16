@@ -1,7 +1,4 @@
 
-def process_student_details_insertion():
-    pass 
-
 import bcrypt
 from Repository.db_operations import inser_data
 from Utilities.custom_exceptions import BadRequestException,CustomAPIException
