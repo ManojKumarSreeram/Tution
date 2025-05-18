@@ -12,6 +12,7 @@ from Controller.update_parent_details_controller import validate_parent_updated_
 from Controller.update_student_details_controller import validate_student_updated_details
 from Controller.insert_homwwork_details_controller import validate_insert_home_work_details
 from Controller.update_homework_controller import validate_updated_home_work_details
+from Controller.search_engine_controller import validate_search_engine
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -366,6 +367,34 @@ def update_homework_details():
         raise ce                # Let Flask handle it
     except Exception as e :
         logging.info("customexception in update_homework_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+
+@app.route('/searchEngine', methods=['POST'])
+def search_engine():
+    try :
+        logging.info("start of search_engine function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_search_engine(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in search_engine function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in search_engine function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);
