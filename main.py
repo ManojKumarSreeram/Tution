@@ -13,6 +13,7 @@ from Controller.update_student_details_controller import validate_student_update
 from Controller.insert_homwwork_details_controller import validate_insert_home_work_details
 from Controller.update_homework_controller import validate_updated_home_work_details
 from Controller.search_engine_controller import validate_search_engine
+from Controller.grid_for_parent_controller import validate_grid_for_parent_details
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -395,6 +396,31 @@ def search_engine():
         raise ce                # Let Flask handle it
     except Exception as e :
         logging.info("customexception in search_engine function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+
+@app.route('/gridForParent',methods=['GET'])
+def get_grid_for_parent():
+    try :
+        logging.info("start of get_grid_for_parent function")
+        result=validate_grid_for_parent_details()
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in get_grid_for_parent function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce       
+    except Exception as e :
+        logging.info("customexception in get_grid_for_parent function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);
