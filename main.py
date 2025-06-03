@@ -1,4 +1,5 @@
 from flask import Flask,request, jsonify
+from flask_cors import CORS
 from Controller.teacher_registration_controller import validate_teacher_registrationDetails
 from Controller.user_login_controller import validate_user_login_details
 from Controller.student_regi_master_data_controller import validate_student_regi_master_data
@@ -14,12 +15,15 @@ from Controller.insert_homwwork_details_controller import validate_insert_home_w
 from Controller.update_homework_controller import validate_updated_home_work_details
 from Controller.search_engine_controller import validate_search_engine
 from Controller.grid_for_parent_controller import validate_grid_for_parent_details
+from Controller.get_search_history_controller import validate_get_search_history
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
 from Repository.db_operations import inser_data
 
 app = Flask(__name__)
+# Enable CORS for all routes and origins (for development only)
+CORS(app)
 
 @app.route('/registerTeacher', methods=['POST'])
 def register_teacher():
@@ -421,6 +425,32 @@ def get_grid_for_parent():
         raise ce       
     except Exception as e :
         logging.info("customexception in get_grid_for_parent function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"Error":str(e),"statuscode":e.status_code})
+
+@app.route('/getSearchHistory',methods=['POST'])
+def get_search_histoy():
+    try :
+        logging.info("start of get_search_histoy function")
+        params=request.get_json()
+        result=validate_get_search_history(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in get_search_histoy function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce       
+    except Exception as e :
+        logging.info("customexception in get_search_histoy function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);

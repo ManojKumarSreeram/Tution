@@ -23,12 +23,12 @@ def process_teacher_registration_details(params):
 
         query = """
                 INSERT INTO teacher_registration (first_name, last_name, email, password, phone_number,gender)
-                VALUES (%s, %s, %s,%s, %s,%s);
+                VALUES (%s, %s, %s,%s, %s,%s) RETURNING teacher_id;
             """
         hashed_password=hash_password(password)
         values = (first_name,last_name,email,hashed_password,phone_number,gender)
         result=inser_data(query,values)
-        return {"data":"data is inserted successfully","status_code":200}
+        return {"status":"data is inserted successfully","status_code":200,"data":{"teacher_id":result}}
     except CustomAPIException as ce:
         logging.info("customexception in process_teacher_registration_details function")
         query = """

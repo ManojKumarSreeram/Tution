@@ -2,23 +2,23 @@
 title Search History
 
 class App {
-    +search_history()
+    +get_search_history()
 }
 
-class searchHistoruController {
-    +validate_search_history()
+class getSearchHistoryController {
+    +validate_get_search_history()
 }
 
-class serachHistoryService {
-    +process_doubts_history()
+class getSearchHistoryService {
+    +process_get_search_history()
 }
 
 class DBConnection {
     +connect_db()
 }
 
-App --> searchHistoruController
-searchHistoruController --> serachHistoryService 
-serachHistoryService --> DBConnection
+App --> getSearchHistoryController
+getSearchHistoryController --> getSearchHistoryService 
+getSearchHistoryService --> DBConnection
 
 @enduml
