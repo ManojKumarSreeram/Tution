@@ -18,14 +18,10 @@ JWT_EXP_DELTA_MINUTES = 60  # Token valid for 1 hour
 # Check password
 def check_password(plain_password: str, hashed_password_str: str) -> bool:
     # Convert Postgres-style hex string (like '\\x2432...') to bytes
-    print(hashed_password_str,"\n this is hassed password--1")
     if hashed_password_str.startswith("\\x"):
         hashed_password_bytes = bytes.fromhex(hashed_password_str[2:])
-        print(hashed_password_str,"\n this is hassed password--2")
     else:
         raise BadRequestException("Invalid hashed password format")
-    print(hashed_password_str,"\n this is hassed password--3")
-    print(bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password_bytes),"------this is response")
     
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password_bytes)
 
@@ -74,12 +70,14 @@ def process_user_login_details(params):
                     "id": user_id,
                     "token": token,
                     "is_user_details_filled":result[2],
+                    "user_type":user_type,
                     "status_code":200
                     }
                 return {
                     "user_type": user_type,
                     "id": user_id,
                     "token": token,
+                    "user_type":user_type,
                     "status_code":200
                 }
             else:
