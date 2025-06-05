@@ -10,7 +10,7 @@ from Repository.db_operations import inser_data
 def validate_student_details_insertion(params):
     try:
         logging.info("start of validate_student_details_insertion function")
-        optional_keys = {}
+        optional_keys = {"favourate_subjects","toughest_subjects"}
         missing = validate_request_body(params, optional_keys=optional_keys)
         if not missing:
             response = process_student_details_insertion(params)

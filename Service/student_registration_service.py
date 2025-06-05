@@ -29,7 +29,7 @@ def process_student_registration_details(params):
         hashed_password=hash_password(password)
         values = (teacher_id,first_name,last_name,email,gender,hashed_password,phone_number)
         result=inser_data(query,values)
-        return {"data":"data is inserted successfully","status_code":200,"data":{"student_id":result}}
+        return {"status":"data is inserted successfully","status_code":200,"data":{"student_id":result}}
     except CustomAPIException as ce:
         logging.info("customexception in process_student_registration_details function")
         query = """

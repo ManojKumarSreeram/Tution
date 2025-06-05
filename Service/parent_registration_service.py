@@ -48,7 +48,7 @@ def process_parent_registration_details(params):
             mapping_values.extend([parent_id, student_id])  # flatten the list
         inser_data(mapping_query, tuple(mapping_values))
        
-        return {"data":"data is inserted successfully","status_code":200}
+        return {"status":"data is inserted successfully","status_code":200,"data":{"parent_id":parent_id}}
     except CustomAPIException as ce:
         logging.info("customexception in process_parent_registration_details function")
         query = """
