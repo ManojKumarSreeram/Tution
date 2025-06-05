@@ -43,19 +43,19 @@ def process_user_login_details(params):
         global result 
         if user_type == "teacher":
             query = """
-                select password,teacher_id from teacher_registration where email = %s
+                select password,teacher_id from teacher_registration where email = %s and is_active= true
             """
             values = (email,)
             result=fetch_single_row(query,values)
         elif user_type == "student":
             query = """
-                select password,student_id,is_details_filled from student_login where email = %s
+                select password,student_id,is_details_filled from student_login where email = %s and is_active= true
             """
             values = (email,)
             result=fetch_single_row(query,values)
         elif user_type == "parent" :
             query = """
-                select password,parent_id from parent_login where email = %s
+                select password,parent_id from parent_login where email = %s and is_active= true
             """
             values = (email,)
             result=fetch_single_row(query,values)
@@ -83,7 +83,7 @@ def process_user_login_details(params):
             else:
                 raise ForbiddenException("Password not matched")
         else:
-            raise ForbiddenException("User not registered yet")        
+            raise ForbiddenException("User details not found")        
     except CustomAPIException as ce:
         logging.info("customexception in process_user_login_details function")
         query = """
