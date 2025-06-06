@@ -14,7 +14,9 @@ def process_teacher_profile_details(params):
         teacher_details_result=fetch_single_row(teacher_details_query,values)
 
         # arranging data in json format
-        teacher_formatted_data = {'id': teacher_details_result[0], 'first_name': teacher_details_result[1],'last_name': teacher_details_result[2],'email': teacher_details_result[3],'phone_number':teacher_details_result[4]}
+        teacher_formatted_data={}
+        if teacher_details_result:
+            teacher_formatted_data = {'id': teacher_details_result[0], 'first_name': teacher_details_result[1],'last_name': teacher_details_result[2],'email': teacher_details_result[3],'phone_number':teacher_details_result[4]}
 
         
         return {"data":teacher_formatted_data,"status_code":200}

@@ -14,7 +14,9 @@ def process_Student_profile_details(params):
         student_details_result=fetch_single_row(student_details_query,values)
 
         # arranging data in json format
-        students_formatted_data={'id': student_details_result[0], 'first_name': student_details_result[1],'last_name': student_details_result[2],'email': student_details_result[3],'phone_number':student_details_result[4]}
+        students_formatted_data={}
+        if student_details_result:
+            students_formatted_data={'id': student_details_result[0], 'first_name': student_details_result[1],'last_name': student_details_result[2],'email': student_details_result[3],'phone_number':student_details_result[4]}
 
         
         return {"data":students_formatted_data,"status_code":200}
