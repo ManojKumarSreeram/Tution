@@ -6,11 +6,6 @@ from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 
-def hash_password(plain_password: str) -> bytes:
-    salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(plain_password.encode('utf-8'), salt)
-    return hashed
-
 def process_parent_updated_details(params):
     try:
         logging.info("start of process_parent_updated_details function")
@@ -18,7 +13,6 @@ def process_parent_updated_details(params):
         first_name = params.get("first_name").strip()
         last_name = params.get("last_name").strip()
         email = params.get("email").strip()
-        password = params.get("password").strip()
         phone_number = params.get("phone_number").strip()
         gender = params.get("gender").strip()
         parent_id = params.get("parent_id").strip()
@@ -30,7 +24,6 @@ def process_parent_updated_details(params):
             SET first_name = %s,
                 last_name = %s,
                 email = %s,
-                password = %s,
                 phone_number = %s,
                 gender = %s,
                 modified_at = %s
@@ -40,8 +33,7 @@ def process_parent_updated_details(params):
         now = datetime.now()
         formatted_date = now.strftime("%Y-%m-%d %H:%M:%S.%f")
 
-        hashed_password = hash_password(password)
-        values = (first_name, last_name, email, hashed_password, phone_number, gender, formatted_date, parent_id)
+        values = (first_name, last_name, email, phone_number, gender, formatted_date, parent_id)
         inser_data(query, values)
 
         # ------------------------------
@@ -76,7 +68,6 @@ def process_parent_updated_details(params):
         # ------------------------------
         # Mark removed student mappings as inactive
         # ------------------------------
-        print(remove_student_ids,"----------------")
         if remove_student_ids:
             for student_id in remove_student_ids:
                 update_query = """
