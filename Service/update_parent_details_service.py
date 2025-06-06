@@ -59,10 +59,10 @@ def process_parent_updated_details(params):
                 elif not existing[-1] :
                     update_query = """
                     UPDATE parent_student
-                    SET is_active = true
+                    SET is_active = true,modified_at = %s
                     WHERE parent_id = %s AND student_id = %s;
                      """
-                    update_query_values=(parent_id, student_id)
+                    update_query_values=(formatted_date,parent_id, student_id)
                     inser_data(update_query, update_query_values)
 
         # ------------------------------
@@ -72,10 +72,10 @@ def process_parent_updated_details(params):
             for student_id in remove_student_ids:
                 update_query = """
                     UPDATE parent_student
-                    SET is_active = false
+                    SET is_active = false,modified_at = %s
                     WHERE parent_id = %s AND student_id = %s AND is_active = true;
                 """
-                update_query_values=(parent_id, student_id)
+                update_query_values=(formatted_date,parent_id, student_id)
                 inser_data(update_query, update_query_values)
 
         return {"data": "Data updated successfully", "status_code": 200}

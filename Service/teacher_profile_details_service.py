@@ -9,14 +9,14 @@ def process_teacher_profile_details(params):
         logging.info("start of process_teacher_profile_details function")
         teacher_id=params.get('teacher_id').strip()
         # student Details
-        teacher_details_query = "select teacher_id,first_name, last_name, email,phone_number from teacher_registration where teacher_id = %s and is_active= true;"
+        teacher_details_query = "select teacher_id,first_name, last_name, email,phone_number,gender from teacher_registration where teacher_id = %s and is_active= true;"
         values = (teacher_id,)
         teacher_details_result=fetch_single_row(teacher_details_query,values)
 
         # arranging data in json format
         teacher_formatted_data={}
         if teacher_details_result:
-            teacher_formatted_data = {'id': teacher_details_result[0], 'first_name': teacher_details_result[1],'last_name': teacher_details_result[2],'email': teacher_details_result[3],'phone_number':teacher_details_result[4]}
+            teacher_formatted_data = {'id': teacher_details_result[0], 'first_name': teacher_details_result[1],'last_name': teacher_details_result[2],'email': teacher_details_result[3],'phone_number':teacher_details_result[4],'gender':teacher_details_result[5]}
 
         
         return {"data":teacher_formatted_data,"status_code":200}

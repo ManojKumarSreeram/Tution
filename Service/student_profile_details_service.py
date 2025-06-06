@@ -9,14 +9,14 @@ def process_Student_profile_details(params):
         logging.info("start of process_Student_profile_details function")
         student_id=params.get('student_id').strip()
         # student Details
-        student_details_query = "select student_id,first_name, last_name, email,phone_number from student_login where student_id = %s and is_active= true;"
+        student_details_query = "select student_id,first_name, last_name, email,phone_number,gender,teacher_id from student_login where student_id = %s and is_active= true;"
         values = (student_id,)
         student_details_result=fetch_single_row(student_details_query,values)
 
         # arranging data in json format
         students_formatted_data={}
         if student_details_result:
-            students_formatted_data={'id': student_details_result[0], 'first_name': student_details_result[1],'last_name': student_details_result[2],'email': student_details_result[3],'phone_number':student_details_result[4]}
+            students_formatted_data={'id': student_details_result[0], 'first_name': student_details_result[1],'last_name': student_details_result[2],'email': student_details_result[3],'phone_number':student_details_result[4],'gender':student_details_result[5],'teacher_id':student_details_result[6]}
 
         
         return {"data":students_formatted_data,"status_code":200}

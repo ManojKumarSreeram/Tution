@@ -15,7 +15,7 @@ def process_student_updated_details(params):
         email=params.get("email").strip()
         phone_number=params.get("phone_number").strip()
         gender=params.get("gender").strip()
-        student_id = params.get("student_id").strip()
+        student_id = params.get("id").strip()
 
         query = """
                     UPDATE student_login
