@@ -16,6 +16,7 @@ from Controller.update_homework_controller import validate_updated_home_work_det
 from Controller.search_engine_controller import validate_search_engine
 from Controller.grid_for_parent_controller import validate_grid_for_parent_details
 from Controller.get_search_history_controller import validate_get_search_history
+from Controller.student_profile_details_controller import validate_student_profile_details
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -51,7 +52,7 @@ def register_teacher():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/registerStudent', methods=['POST'])
 def register_student():
@@ -79,7 +80,7 @@ def register_student():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/registerParent', methods=['POST'])
 def register_parent():
@@ -107,7 +108,7 @@ def register_parent():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
    
 @app.route('/login',methods=['POST'])
 def login_user():
@@ -135,7 +136,7 @@ def login_user():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/updateTeacherDetails', methods=['PUT'])
 def update_teacher_deatails():
@@ -163,7 +164,7 @@ def update_teacher_deatails():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/updateStudentDetails', methods=['PUT'])
 def update_student_deatails():
@@ -191,7 +192,7 @@ def update_student_deatails():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"Error":str(e),"statuscode":e.status_code})
+        return jsonify({"Error":str(e),"statuscode":400})
 
 @app.route('/updateParentDetails', methods=['PUT'])
 def update_parent_deatails():
@@ -219,7 +220,7 @@ def update_parent_deatails():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"Error":str(e),"statuscode":e.status_code})
+        return jsonify({"Error":str(e),"statuscode":400})
 
 @app.route('/studentRegMasterData',methods=['GET'])
 def student_registration_master_data():
@@ -244,7 +245,7 @@ def student_registration_master_data():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/subjectDifficultyLevels',methods=['GET'])
 def subject_difficulty_levels():
@@ -269,7 +270,7 @@ def subject_difficulty_levels():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/getStudentDetails',methods=['GET'])
 def get_student_details():
@@ -294,7 +295,36 @@ def get_student_details():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
+
+@app.route('/getStudentProfileDetails', methods=['POST'])
+def get_student_profile_details():
+    try :
+        logging.info("start of get_student_profile_details function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_student_profile_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in get_student_profile_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in get_student_profile_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"error":str(e),"status_code":400})
+
 
 @app.route('/insertStudentDetails', methods=['POST'])
 def insert_student_details():
@@ -322,7 +352,7 @@ def insert_student_details():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/insertHomeWorkDetails', methods=['POST'])
 def insert_home_work_details():
@@ -350,7 +380,7 @@ def insert_home_work_details():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/updateHomeworkrDetails', methods=['PUT'])
 def update_homework_details():
@@ -378,7 +408,7 @@ def update_homework_details():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/searchEngine', methods=['POST'])
 def search_engine():
@@ -406,7 +436,7 @@ def search_engine():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/gridForParent',methods=['GET'])
 def get_grid_for_parent():
@@ -431,7 +461,7 @@ def get_grid_for_parent():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 @app.route('/getSearchHistory',methods=['POST'])
 def get_search_histoy():
@@ -457,7 +487,7 @@ def get_search_histoy():
             """
         values = (str(e),__name__)
         inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":e.status_code})
+        return jsonify({"error":str(e),"status_code":400})
 
 
 # Central handler for all custom exceptions

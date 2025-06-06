@@ -1,0 +1,24 @@
+@startuml ""
+title get Student Profile Details
+
+class App {
+    +get_student_profile_details()
+}
+
+class studentProfileDetailsController {
+    +validate_studnet_profile_details()
+}
+
+class studentProfileDetailsService {
+    +process_Student_profile_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> studentProfileDetailsController
+studentProfileDetailsController --> studentProfileDetailsService 
+studentProfileDetailsService --> DBConnection
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml ""
+title get Parent Profile Details
+
+class App {
+    +get_parent_profile_details()
+}
+
+class parentProfileDetailsController {
+    +validate_parent_profile_details()
+}
+
+class parentProfileDetailsService {
+    +process_parent_profile_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> parentProfileDetailsController
+parentProfileDetailsController --> parentProfileDetailsService 
+parentProfileDetailsService --> DBConnection
+
+@enduml

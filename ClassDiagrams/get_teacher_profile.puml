@@ -1,0 +1,24 @@
+@startuml ""
+title get Teacher Profile Details
+
+class App {
+    +get_teacher_profile_details()
+}
+
+class teacherProfileDetailsController {
+    +validate_teacher_profile_details()
+}
+
+class teacherProfileDetailsService {
+    +process_teacher_profile_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> teacherProfileDetailsController
+teacherProfileDetailsController --> teacherProfileDetailsService 
+teacherProfileDetailsService --> DBConnection
+
+@enduml
