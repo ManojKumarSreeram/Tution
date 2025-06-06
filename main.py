@@ -17,6 +17,7 @@ from Controller.search_engine_controller import validate_search_engine
 from Controller.grid_for_parent_controller import validate_grid_for_parent_details
 from Controller.get_search_history_controller import validate_get_search_history
 from Controller.student_profile_details_controller import validate_student_profile_details
+from Controller.teacher_profile_details_controller import validate_teacher_profile_details
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -317,6 +318,34 @@ def get_student_profile_details():
         raise ce                # Let Flask handle it
     except Exception as e :
         logging.info("customexception in get_student_profile_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"error":str(e),"status_code":400})
+
+@app.route('/getTeacherProfileDetails', methods=['POST'])
+def get_teacher_profile_details():
+    try :
+        logging.info("start of get_teacher_profile_details function")
+        params=request.get_json()
+        if not params:
+            return {"data":"request body cannot be empty","status_code":401}
+        result=validate_teacher_profile_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in get_teacher_profile_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce                # Let Flask handle it
+    except Exception as e :
+        logging.info("customexception in get_teacher_profile_details function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);
