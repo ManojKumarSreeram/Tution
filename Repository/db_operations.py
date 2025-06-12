@@ -4,13 +4,16 @@ from Utilities.custom_exceptions import InternalServerError,CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
 
-def inser_data(query, values):
+def inser_data(query, values,many=False):
     try:   
         logging.info("start of inser_data function")
         conn = connect_db() 
         cur = conn.cursor() 
         # Execute the insert query
-        cur.execute(query, values)
+        if many:
+            cur.executemany(query, values)
+        else:
+            cur.execute(query, values)
 
         # Try to fetch the returning id (if any)
         returning_id = None

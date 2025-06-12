@@ -13,10 +13,9 @@ def process_insert_home_work_details(params):
         student_id = params.get("student_id").strip()
         subject_details = params.get("subject_details")
 
-        hours_query="select no_of_hours_to_study from student_details where student_id=%s"
-        hours_query_value=(student_id,)
-        hours_to_study=fetch_single_row(hours_query,hours_query_value)
-
+        hours_query = "select no_of_hours_to_study from student_details where student_id=%s"
+        hours_query_value = (student_id,)
+        hours_to_study = fetch_single_row(hours_query, hours_query_value)
 
         subject_ids = list({item['subject_id'] for item in subject_details})
         difficulty_ids = list({item['subject_difficulty_level'] for item in subject_details})
@@ -26,7 +25,6 @@ def process_insert_home_work_details(params):
             SELECT id, subject_name FROM subjects
             WHERE id = ANY(%s);
         """
-        # making a dict with id:subject_name format
         subject_rows = fetch_multiple_rows(subject_query, (subject_ids,))
         subject_map = {row[0]: row[1] for row in subject_rows}
 
@@ -38,7 +36,6 @@ def process_insert_home_work_details(params):
         difficulty_rows = fetch_multiple_rows(difficulty_query, (difficulty_ids,))
         difficulty_map = {row[0]: row[1] for row in difficulty_rows}
 
-        # Build response
         updated_subject_details = []
         for item in subject_details:
             subject_name = subject_map.get(item['subject_id'], "Unknown")
@@ -49,44 +46,32 @@ def process_insert_home_work_details(params):
                 "subject_difficulty": difficulty_name
             })
 
-        homework_input={
-            "homework_details":updated_subject_details,
+        homework_input = {
+            "homework_details": updated_subject_details,
             "no_hours_to_study": hours_to_study
         }
-        
-        system_prompt,actual_prompt = plan_generatorPrompt(homework_input)
 
-        print(actual_prompt,"--this is acutual prompt")
-        study_plan = llm_call(system_prompt,actual_prompt)
-        print(study_plan,"-----------this is study plan")
-        # Clean the response
+        system_prompt, actual_prompt = plan_generatorPrompt(homework_input)
+        study_plan = llm_call(system_prompt, actual_prompt)
+
         cleaned_response = study_plan.strip("`").strip()
         if cleaned_response.startswith("json"):
             cleaned_response = cleaned_response[4:].strip()
 
-        # Convert to dictionary
-        data_dict = json.loads(cleaned_response)
-        
+        parsed_llm_response = json.loads(cleaned_response)
 
-        # insert student-subject mapping details in student_homework table
-        mapping_query_base = """
-            INSERT INTO student_homework (student_id, subject_id, subject_difficulty_level, allocated_time_to_hw)
-            VALUES
-        """
-        values_placeholder = ",".join(["(%s, %s, %s, %s)" for _ in subject_details])
-        mapping_query = mapping_query_base + values_placeholder
+        # Insert study plan into DB
+        study_plan_query = "INSERT INTO student_homework_plan (study_plan,student_id) VALUES (%s,%s) RETURNING id"
+        study_plan_values = (json.dumps(parsed_llm_response),student_id)
+        study_plan_id = inser_data(study_plan_query, study_plan_values)
 
-        mapping_values = []
 
-        # Create a map from subject name and tag in LLM response to subject_id and difficulty level
-        # Assuming subject names in the LLM response match the names from the DB
-        llm_subject_schedule = data_dict.get("schedule", [])
-        
-
-        # Create reverse maps from subject name/tag back to id
+        # Create reverse maps for subject and difficulty
         reverse_subject_map = {v: k for k, v in subject_map.items()}
         reverse_difficulty_map = {v: k for k, v in difficulty_map.items()}
 
+        llm_subject_schedule = parsed_llm_response.get("schedule", [])
+        mapping_values = []
 
         for item in llm_subject_schedule:
             subject_name = item["subject"]
@@ -96,15 +81,37 @@ def process_insert_home_work_details(params):
             subject_id = reverse_subject_map.get(subject_name)
             difficulty_level_id = reverse_difficulty_map.get(difficulty_tag)
 
-            if subject_id is None or difficulty_level_id is None:
+            if subject_id is None or difficulty_level_id is None or study_plan_id is None:
                 logging.warning(f"Skipping subject {subject_name} with difficulty {difficulty_tag} due to unmatched mapping.")
                 continue
 
-            mapping_values.extend([student_id, subject_id, difficulty_level_id, allocated_hour])
-        inser_data(mapping_query, tuple(mapping_values))
+            mapping_values.append((student_id, subject_id, difficulty_level_id, allocated_hour, study_plan_id))
 
+        # Final insertion using many=True and single VALUES template
+        mapping_query = """
+            INSERT INTO student_homework (student_id, subject_id, subject_difficulty_level, allocated_time_to_hw, student_homework_plan_id)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        inser_data(mapping_query, mapping_values, many=True)
 
-        return {"data":"data is inserted successfully","status_code":200}
+        new_parsed_llm_respones = [
+            {
+                **item,
+                "is_homework_completed": False,
+                "file_name": "",
+                "file_content": None,
+                "comments": ""
+            }
+            for item in llm_subject_schedule
+        ]
+
+        # Optionally return or log the final enriched response
+        return {
+            "status": "success",
+            "study_plan_id": study_plan_id,
+            "homework_schedule": new_parsed_llm_respones
+        }
+   
 
     except CustomAPIException as ce:
         logging.info("CustomAPIException in process_insert_home_work_details function")
