@@ -444,31 +444,51 @@ def insert_home_work_details():
 
 @app.route('/updateHomeworkrDetails', methods=['PUT'])
 def update_homework_details():
-    try :
+    try:
         logging.info("start of update_homework_details function")
-        params=request.get_json()
-        if not params:
-            return {"data":"request body cannot be empty","status_code":401}
-        result=validate_updated_home_work_details(params)
+
+        # Extract form fields and file
+        homework_status = request.form.get("homework_status")
+        homework_id = request.form.get("homework_id")
+        comments = request.form.get("comments")
+        file_name = request.form.get("file_name")
+        file = request.files.get("file")
+
+        if not homework_id or not homework_status:
+            return {"data": "homework_id and homework_status are required", "status_code": 401}
+
+        file_content = file.read() if file else None
+
+        # Prepare params dict
+        params = {
+            "homework_status": homework_status,
+            "homework_id": homework_id,
+            "comments": comments,
+            "file_name": file_name,
+            "file_content": file_content
+        }
+
+        result = validate_updated_home_work_details(params)
         return result
+
     except CustomAPIException as ce:
         logging.info("customexception in update_homework_details function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);
             """
-        values = (str(ce),__name__)
-        inser_data(query,values)
-        raise ce                # Let Flask handle it
-    except Exception as e :
-        logging.info("customexception in update_homework_details function")
+        values = (str(ce), __name__)
+        inser_data(query, values)
+        raise ce
+    except Exception as e:
+        logging.info("exception in update_homework_details function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);
             """
-        values = (str(e),__name__)
-        inser_data(query,values)
-        return jsonify({"error":str(e),"status_code":400})
+        values = (str(e), __name__)
+        inser_data(query, values)
+        return jsonify({"error": str(e), "status_code": 400})
 
 @app.route('/searchEngine', methods=['POST'])
 def search_engine():

@@ -6,13 +6,15 @@ from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 
+import base64  # ✅ For encoding binary file content
+
 def process_Study_plan_details(params):
     try:
         logging.info("Start of process_Study_plan_details function")
 
         student_id = params.get('student_id').strip()
 
-        # Step 1: Fetch study plans for the student
+        # Step 1: Fetch study plans
         query = """
             SELECT id AS study_plan_id, study_plan, created_at
             FROM student_homework_plan
@@ -34,9 +36,9 @@ def process_Study_plan_details(params):
 
             schedule = study_plan_data.get("schedule", [])
 
-            # Step 2: Fetch homework records for this plan
+            # Step 2: Fetch homework for this plan
             hw_query = """
-                SELECT is_homework_completed, file_name, file_content, comments
+                SELECT is_homework_completed, file_name, file_content, comments, id
                 FROM student_homework
                 WHERE student_homework_plan_id = %s
                 ORDER BY created_at;
@@ -44,21 +46,27 @@ def process_Study_plan_details(params):
             homework_rows = fetch_multiple_rows(hw_query, (plan_id,))
             print(homework_rows, "------------these are home work rows")
 
-            # Step 3: Merge data into schedule (index-based match)
+            # Step 3: Merge into schedule
             for idx, item in enumerate(schedule):
                 if idx < len(homework_rows):
+                    file_content = homework_rows[idx][2]
+                    # Convert file_content to base64 if it's not None
+                    base64_file = base64.b64encode(file_content).decode('utf-8') if file_content else None
+
                     item.update({
                         "is_homework_completed": homework_rows[idx][0],
                         "file_name": homework_rows[idx][1],
-                        "file_content": homework_rows[idx][2],
-                        "comments": homework_rows[idx][3]
+                        "file_content": base64_file,  # ✅ Send base64 to frontend
+                        "comments": homework_rows[idx][3],
+                        "homework_id": homework_rows[idx][4]
                     })
                 else:
                     item.update({
                         "is_homework_completed": False,
                         "file_name": "",
                         "file_content": None,
-                        "comments": ""
+                        "comments": "",
+                        "homework_id": ""
                     })
 
             results.append({
@@ -67,10 +75,10 @@ def process_Study_plan_details(params):
                 "date": date
             })
 
-        # Step 4: Add today's date if not present
+        # Step 4: Add dummy plan for today if not found
         today_date = datetime.now().strftime("%d-%m-%Y")
         if not any(r['date'] == today_date for r in results):
-            results.insert(0,{
+            results.insert(0, {
                 "study_plan_id": None,
                 "study_plan": {},
                 "date": today_date
