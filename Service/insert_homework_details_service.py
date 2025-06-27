@@ -107,7 +107,7 @@ def process_insert_home_work_details(params):
 
         # Optionally return or log the final enriched response
         return {
-            "status": "success",
+            "status_code": 200,
             "study_plan_id": study_plan_id,
             "homework_schedule": new_parsed_llm_respones
         }

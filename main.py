@@ -19,6 +19,8 @@ from Controller.get_search_history_controller import validate_get_search_history
 from Controller.student_profile_details_controller import validate_student_profile_details
 from Controller.teacher_profile_details_controller import validate_teacher_profile_details
 from Controller.parent_profile_details_controller import validate_parent_profile_details
+from Controller.study_plan_details_controller import validate_study_plan_details
+from Controller.student_selected_subjects_controller import validate_student_selected_subjects
 from Utilities.custom_exceptions import CustomAPIException
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -539,6 +541,58 @@ def get_search_histoy():
         raise ce       
     except Exception as e :
         logging.info("customexception in get_search_histoy function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"error":str(e),"status_code":400})
+
+@app.route('/getStudyPlan',methods=['POST'])
+def get_study_plan_details():
+    try :
+        logging.info("start of get_study_plan_details function")
+        params=request.get_json()
+        result=validate_study_plan_details(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in get_study_plan_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce       
+    except Exception as e :
+        logging.info("customexception in get_study_plan_details function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(e),__name__)
+        inser_data(query,values)
+        return jsonify({"error":str(e),"status_code":400})
+
+@app.route('/getStudentSelectedSubjects',methods=['POST'])
+def get_student_selected_subjects():
+    try :
+        logging.info("start of get_student_selected_subjects function")
+        params=request.get_json()
+        result=validate_student_selected_subjects(params)
+        return result
+    except CustomAPIException as ce:
+        logging.info("customexception in get_student_selected_subjects function")
+        query = """
+                INSERT INTO error_logs (error,file_name)
+                VALUES (%s, %s);
+            """
+        values = (str(ce),__name__)
+        inser_data(query,values)
+        raise ce       
+    except Exception as e :
+        logging.info("customexception in get_student_selected_subjects function")
         query = """
                 INSERT INTO error_logs (error,file_name)
                 VALUES (%s, %s);

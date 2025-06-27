@@ -1,0 +1,24 @@
+@startuml ""
+title get Study Plan Details
+
+class App {
+    +get_study_plan_details()
+}
+
+class studyPlanDetailsController {
+    +validate_study_plan_details()
+}
+
+class studyPlanDetailsService {
+    +process_Study_plan_details()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> studyPlanDetailsController
+studyPlanDetailsController --> studyPlanDetailsService 
+studyPlanDetailsService --> DBConnection
+
+@enduml

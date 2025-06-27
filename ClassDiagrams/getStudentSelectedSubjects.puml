@@ -1,0 +1,24 @@
+@startuml ""
+title get Student selected subjects
+
+class App {
+    +get_student_selected_subjects()
+}
+
+class studentSelectedSubjectsController {
+    +validate_student_selected_subjects()
+}
+
+class studentSelectedSubjectsService {
+    +process_student_selected_subjects()
+}
+
+class DBConnection {
+    +connect_db()
+}
+
+App --> studentSelectedSubjectsController
+studentSelectedSubjectsController --> studentSelectedSubjectsService 
+studentSelectedSubjectsService --> DBConnection
+
+@enduml
